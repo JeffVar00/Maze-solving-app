@@ -1,5 +1,5 @@
 class DynamicWindowSize:
-    def __init__(self, root, width_ratio=0.4, height_ratio=0.4):
+    def __init__(self, root, width_ratio=0.6, height_ratio=0.6):
         self.root = root
         self.width_ratio = width_ratio
         self.height_ratio = height_ratio

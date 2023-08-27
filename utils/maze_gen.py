@@ -3,7 +3,7 @@ import random
 def generate_labyrinth(n, m, difficulty):
     labyrinth = [[0 for _ in range(m)] for _ in range(n)]
 
-    dictionary = {"easy": 0.25, "normal": 0.5 , "difficult": 0.75}
+    dictionary = {"easy": 0.2, "normal": 0.3 , "difficult": 0.4}
     obstacle_density = dictionary[difficulty]
     
     start = (random.randint(0, n - 1), random.randint(0, m - 1))

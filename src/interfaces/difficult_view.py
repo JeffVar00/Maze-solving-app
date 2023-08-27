@@ -4,9 +4,6 @@ from src.interfaces.components.window import DynamicWindowSize
 class InputDialog:
     def __init__(self, parent):
 
-        #self.window.title("Maze Solver Difficult Selector")
-        #self.window.configure(bg="#F0F0F0")  
-
         self.dialog = Toplevel(parent)
         self.dialog.title("Maze Difficult Creator")
         self.dialog.geometry("300x250")  # Set the width and height of the window

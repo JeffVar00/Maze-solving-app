@@ -1,0 +1,3 @@
+Algoritmo: Algoritmo 1
+Tiempo: 0.050124 segundos
+Memoria usada: 0.00 KB

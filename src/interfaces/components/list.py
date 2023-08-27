@@ -5,7 +5,7 @@ class AlgorithmSelector:
         self.algorithms = algorithms
         self.selected_algorithm = StringVar(value=default_algorithm)
 
-        self.label = Label(root, text="Seleccione un algoritmo:")
+        self.label = Label(root, text="Seleccione un algoritmo:", bg="white")
         self.label.pack()
 
         style = ttk.Style()
