@@ -1,3 +1,7 @@
+Tama�o del Laberinto: 
+Filas: 5
+Columnas: 5
+
 Algoritmo: Algoritmo 1
-Tiempo: 0.005569 segundos
+Tiempo: 0.000990 segundos
 Memoria usada: 0.00 KB

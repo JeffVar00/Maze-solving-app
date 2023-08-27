@@ -100,7 +100,7 @@ class MazeSolverApp:
         selected_algorithm = self.algorithm_selector.get_selected_algorithm()
         print(f"Selected Algorithm: {selected_algorithm}")
 
-        result_handler = ResultHandler(selected_algorithm, self.laberinth_file_path, self.maze)
+        result_handler = ResultHandler()
         result_handler.start_timer_memory()
         
         # Run the maze solving algorithm selected
@@ -112,7 +112,7 @@ class MazeSolverApp:
 
         result_text = result_handler.record_result()
         self.results_label.config(text=result_text)
-        result_handler.save_result()
+        result_handler.save_result(selected_algorithm, self.laberinth_file_path, self.maze)
         
         messagebox.showinfo("Laberinto Cargado", "Laberinto resuelto :D")
 
