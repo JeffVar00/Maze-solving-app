@@ -4,7 +4,7 @@ import time
 import os
 
 class ResultHandler:
-    def __init__(self, algorithm_name, file_path):
+    def __init__(self, algorithm_name, file_path, maze):
         self.algorithm_name = algorithm_name
         self.file_path = file_path
         self.memory_before = None
@@ -12,6 +12,7 @@ class ResultHandler:
         self.end_time = None
         self.memory_used = None
         self.elapsed_time = None
+        self.maze = maze
 
     def start_timer_memory(self):
         self.memory_before = tracemalloc.get_traced_memory()[0]
@@ -27,6 +28,11 @@ class ResultHandler:
         return f"Tiempo: {self.elapsed_time:.6f} segundos\t Memoria usada: {self.memory_used / 1024:.2f} KB"
 
     def save_result(self):
+
+        # get maze rows and columns
+        rows = len(self.maze)
+        columns = len(self.maze[0])
+
         results_folder = "data/results"
         os.makedirs(results_folder, exist_ok=True)
 
@@ -36,8 +42,12 @@ class ResultHandler:
         # Save the results to a text file
         file_name = f"{results_folder}/{self.algorithm_name.lower().replace(' ', '_')}_{laberinth_name}.txt"
         with open(file_name, 'w') as file:
+            file.write(f"Tamaño del Laberinto: \n")
+            file.write(f"Filas: {rows}\n")
+            file.write(f"Columnas: {columns}\n\n")
             file.write(f"Algoritmo: {self.algorithm_name}\n")
             file.write(f"Tiempo: {self.elapsed_time:.6f} segundos\n")
-            file.write(f"Memoria usada: {self.memory_used / 1024:.2f} KB")
+            file.write(f"Memoria usada: {self.memory_used / 1024:.2f} KB\n")
+            
 
         

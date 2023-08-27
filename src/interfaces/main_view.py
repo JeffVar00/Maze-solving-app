@@ -100,7 +100,7 @@ class MazeSolverApp:
         selected_algorithm = self.algorithm_selector.get_selected_algorithm()
         print(f"Selected Algorithm: {selected_algorithm}")
 
-        result_handler = ResultHandler(selected_algorithm, self.laberinth_file_path)
+        result_handler = ResultHandler(selected_algorithm, self.laberinth_file_path, self.maze)
         result_handler.start_timer_memory()
         
         # Run the maze solving algorithm selected
@@ -120,6 +120,8 @@ class MazeSolverApp:
         # self.save_maze()
 
     def save_maze(self):
+
+        ## ver que hacer si guardar apenas termina o dar la opcion para guardar el laberinto, los resultados si se guardan automaticamente
 
         if self.maze is None and self.completed_maze is False:
             messagebox.showerror("Error", "No hay resultados para guardar.")
