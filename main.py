@@ -1,5 +1,3 @@
-# generate a python main default
-
 import tkinter as tk
 from src.interfaces.main_view import MazeSolverApp
 

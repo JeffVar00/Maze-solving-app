@@ -1,7 +1,10 @@
 import random
 
-def generate_labyrinth(n, m, obstacle_density):
+def generate_labyrinth(n, m, difficulty):
     labyrinth = [[0 for _ in range(m)] for _ in range(n)]
+
+    dictionary = {"easy": 0.25, "normal": 0.5 , "difficult": 0.75}
+    obstacle_density = dictionary[difficulty]
     
     start = (random.randint(0, n - 1), random.randint(0, m - 1))
     end = (random.randint(0, n - 1), random.randint(0, m - 1))
@@ -19,15 +22,3 @@ def generate_labyrinth(n, m, obstacle_density):
                     labyrinth[row][col] = 0  # Road
 
     return labyrinth
-
-## Example usage
-# n = 5
-# m = 5
-
-# obstacle_density = 0.3  # Difficulty 0-1 -- 0-Easier-0.5-harder-1
-
-# labyrinth_matrix = generate_labyrinth(n, m, obstacle_density)
-
-## Print the generated labyrinth
-# for row in labyrinth_matrix:
-#     print(" ".join(map(str, row)))
