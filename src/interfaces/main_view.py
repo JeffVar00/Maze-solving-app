@@ -1,3 +1,6 @@
+import tracemalloc
+import time
+import os
 
 from tkinter import filedialog, messagebox, Label, Frame
 
@@ -5,6 +8,7 @@ from src.interfaces.components.button import StyledButton
 from src.interfaces.components.window import DynamicWindowSize
 from src.interfaces.components.list import AlgorithmSelector
 from src.interfaces.difficult_view import InputDialog
+from src.models.time_tracker import ResultHandler
 
 from utils.csv_modules import load_maze_from_csv, save_maze_to_csv
 from utils.maze_gen import generate_labyrinth
@@ -48,6 +52,7 @@ class MazeSolverApp:
         # Variables
         self.completed_maze = False
         self.maze = None
+        self.laberinth_file_path = None
 
     def create_maze(self):
 
@@ -64,24 +69,44 @@ class MazeSolverApp:
 
     def solve_maze(self):
 
-        file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
-        self.maze = load_maze_from_csv(file_path)
+        # Ask for CSV file
+        self.laberinth_file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+        self.maze = load_maze_from_csv(self.laberinth_file_path)
+
+        if self.laberinth_file_path == "":
+            return
+            
         print(self.maze)
 
+        if self.maze is None:
+            messagebox.showerror("Error", "Seleccione un laberinto primero.")
+            return
+        if not isinstance(self.maze, list):
+            messagebox.showerror("Error", "El archivo seleccionado no es un laberinto.")
+            return
+
+        # Get the algortihm from the list
         selected_algorithm = self.algorithm_selector.get_selected_algorithm()
         print(f"Selected Algorithm: {selected_algorithm}")
 
-        if self.maze is None:
-            messagebox.showerror("Error", "Carga un laberinto primero.")
-            return
+        result_handler = ResultHandler(selected_algorithm, self.laberinth_file_path)
+        result_handler.start_timer_memory()
         
+        # Run your maze solving algorithm
+        # This should be a loop showing every step (perfect result) or the final step
+        # ...
+
+        result_handler.stop_timer_memory()
+
+        result_text = result_handler.record_result()
+        result_handler.save_result()
+
+        result_label = Label(self.root, text=result_text)
+        result_label.pack()
         messagebox.showinfo("Laberinto Cargado", "Laberinto resuelto :D")
 
-        # Lógica para resolver el laberinto usando el algoritmo de búsqueda en profundidad (DFS)
-        # Implementa el algoritmo aquí y obtén la lista de tuplas que representa el camino
-
-        # Mostrar el resultado en una matriz en la interfaz gráfica
-        # Actualiza la interfaz gráfica con el resultado
+        # Save the solved maze into a csv file
+        # self.save_maze()
 
     def save_maze(self):
 
@@ -93,6 +118,9 @@ class MazeSolverApp:
     def generate_maze_csv(self, maze):
         
         file_path = filedialog.asksaveasfilename(filetypes=[("CSV Files", "*.csv")])
+
+        if file_path == "":
+            return
 
         if not file_path.endswith(".csv"):
             file_path += ".csv"
