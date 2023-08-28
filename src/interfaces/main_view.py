@@ -35,11 +35,15 @@ class MazeSolverApp:
             "A Search": self.solve_with_a_star
         }
 
+        self.init_window()
+
+    def init_window(self):
+
         # Configuration of the main window
         self.root.title("Maze Solver Application")
         self.root.config(bg="white")
 
-        window_size_config = DynamicWindowSize(root)
+        window_size_config = DynamicWindowSize(self.root)
         window_size_config.center_window()
 
         # Algorithm List
@@ -48,14 +52,14 @@ class MazeSolverApp:
         self.algorithm_selector = AlgorithmSelector(self.root, algorithms, default_algorithm)
         
         # Head Buttons
-        buttons_frame = Frame(root, bg="white")
+        buttons_frame = Frame(self.root, bg="white")
         buttons_frame.pack(pady=10)
 
         StyledButton(buttons_frame, "Generar nuevo Laberinto", self.create_maze, "#3498DB", "white")
         StyledButton(buttons_frame, "Resolver Laberinto", self.solve_maze, "#E74C3C", "white")
 
         # Show the Maze in the Solving Area
-        canvas_frame = Frame(root)
+        canvas_frame = Frame(self.root)
         canvas_frame.pack(expand=True, fill="both")
 
         # Create the canvas and place it in the center of the frame
@@ -67,30 +71,19 @@ class MazeSolverApp:
         self.results_label.pack()
 
         # Bottom Buttons
-        save_frame = Frame(root, bg="white")
+        save_frame = Frame(self.root, bg="white")
         save_frame.pack(pady=10)
 
         StyledButton(save_frame, "Guardar Laberinto", self.save_maze, "#2ECC71", "white")
 
         # Options frame
-        options_frame = Frame(root, bg="white")
+        options_frame = Frame(self.root, bg="white")
         options_frame.pack(pady=10)
 
         StyledButton(options_frame, "Limpiar Laberinto", self.clean_maze, "#E74C3C", "white")
         StyledButton(options_frame, "Resultados", self.open_results_folder, "#F39C12", "white")
 
-    def create_maze(self):
-
-        input_dialog = InputDialog(self.root)
-        self.root.wait_window(input_dialog.dialog)
-        
-        rows = input_dialog.rows
-        columns = input_dialog.columns
-        difficulty = input_dialog.difficulty
-
-        if rows is not None and columns is not None and difficulty:
-            new_maze = generate_labyrinth(rows, columns, difficulty)  # Generate maze based on input
-            self.generate_maze_csv(new_maze)  
+    ###### MAZE SOLVER METHODS ######
 
     def solve_maze(self):
 
@@ -125,7 +118,7 @@ class MazeSolverApp:
 
             if path:
                 self.completed_maze = True
-                self.update_maze_display(path)
+                self.write_maze(path)
             else:
                 messagebox.showinfo("Sin Solución", "No se encontró una solución para el laberinto.")
         else:
@@ -142,6 +135,42 @@ class MazeSolverApp:
 
         # Save the solved maze into a csv file
         # self.save_maze()
+
+    def find_start_position(self, maze):
+        for row in range(len(maze)):
+            for col in range(len(maze[0])):
+                if maze[row][col] == 2:
+                    return row, col
+        return -1, -1
+
+    def find_end_position(self, maze):
+        for row in range(len(maze)):
+            for col in range(len(maze[0])):
+                if maze[row][col] == 3:
+                    return row, col
+        return -1, -1
+
+    def show_solution_on_interface(self, path):
+        for row, col in path:
+            if self.maze[row][col] != 2 and self.maze[row][col] != 3: 
+                self.maze[row][col] = 5 
+
+    ###### MAZE SOLVER METHODS ######
+
+    ###### MAZE GEN METHODS ######
+
+    def create_maze(self):
+
+        input_dialog = InputDialog(self.root)
+        self.root.wait_window(input_dialog.dialog)
+        
+        rows = input_dialog.rows
+        columns = input_dialog.columns
+        difficulty = input_dialog.difficulty
+
+        if rows is not None and columns is not None and difficulty:
+            new_maze = generate_labyrinth(rows, columns, difficulty)  # Generate maze based on input
+            self.generate_maze_csv(new_maze)  
 
     def save_maze(self):
 
@@ -165,7 +194,11 @@ class MazeSolverApp:
         save_maze_to_csv(file_path, maze)
         messagebox.showinfo("Laberinto Guardado", "Laberinto guardado con éxito!")
 
-    def update_maze_display(self, path=None):
+    ###### MAZE GEN METHODS ######
+
+    ###### MAZE DISPLAY METHODS ######
+
+    def write_maze(self, path=None):
         
         self.color_map = {
             0: "white",
@@ -223,8 +256,12 @@ class MazeSolverApp:
 
         self.maze = None
         self.completed_maze = False
-        self.update_maze_display()
+        self.write_maze()
         self.results_label.config(text="")
+
+    ###### MAZE DISPLAY METHODS ######
+
+    ###### OPTIONS METHODS ######
 
     def open_results_folder(self):
         results_folder = os.path.abspath("data/results")
@@ -234,7 +271,9 @@ class MazeSolverApp:
         else:
             messagebox.showinfo("Carpeta de Resultados", "La carpeta de resultados no existe.")
 
-    # Algorithms Methods
+    ###### OPTIONS METHODS ######
+
+    ###### ALGORITHMS METHODS ######
 
     def solve_with_dfs(self, start_row, start_col, end_row, end_col):
         solver = DFSAlgorithm(self.maze)
@@ -242,23 +281,6 @@ class MazeSolverApp:
     
     def solve_with_a_star(self, start_row, start_col, end_row, end_col):
         solver = AStarAlgorithm(self.maze)
-        return solver.find_path(start_row, start_col, end_row, end_col)
-
-    def find_start_position(self, maze):
-        for row in range(len(maze)):
-            for col in range(len(maze[0])):
-                if maze[row][col] == 2:
-                    return row, col
-        return -1, -1
-
-    def find_end_position(self, maze):
-        for row in range(len(maze)):
-            for col in range(len(maze[0])):
-                if maze[row][col] == 3:
-                    return row, col
-        return -1, -1
-
-    def show_solution_on_interface(self, path):
-        for row, col in path:
-            if self.maze[row][col] != 2 and self.maze[row][col] != 3: 
-                self.maze[row][col] = 5  
+        return solver.find_path(start_row, start_col, end_row, end_col) 
+    
+    ###### ALGORITHMS METHODS ######
