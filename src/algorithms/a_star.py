@@ -42,4 +42,4 @@ class AStarAlgorithm:
                         f_score[(neighbor_row, neighbor_col)] = tentative_g_score + self.heuristic((neighbor_row, neighbor_col), (end_row, end_col))
                         heapq.heappush(open_set, (f_score[(neighbor_row, neighbor_col)], neighbor_row, neighbor_col))
 
-        return None  # No path found
+        return None
