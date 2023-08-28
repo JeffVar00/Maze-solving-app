@@ -14,13 +14,14 @@ class ResultHandler:
 
 
     def start_timer_memory(self):
+        tracemalloc.start()
         self.memory_before = tracemalloc.get_traced_memory()[0]
         self.start_time = time.time()
 
     def stop_timer_memory(self):
         self.end_time = time.time()
-        tracemalloc.stop()
         self.memory_used = tracemalloc.get_traced_memory()[0] - self.memory_before
+        tracemalloc.stop()
         self.elapsed_time = self.end_time - self.start_time
 
     def record_result(self):
