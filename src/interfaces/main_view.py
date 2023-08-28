@@ -118,8 +118,17 @@ class MazeSolverApp:
         
         solving_function = self.algorithms.get(selected_algorithm)
         if solving_function:
-            if solving_function():
+
+            start_row, start_col = self.find_start_position(self.maze)
+            end_row, end_col = self.find_end_position(self.maze)
+
+            path = solving_function(start_row, start_col, end_row, end_col)
+
+            if path:
                 self.completed_maze = True
+                self.update_maze_display(path)
+            else:
+                messagebox.showinfo("Sin Solución", "No se encontró una solución para el laberinto.")
         else:
             messagebox.showerror("Error", "Algorithm not found!")
 
@@ -226,37 +235,15 @@ class MazeSolverApp:
         else:
             messagebox.showinfo("Carpeta de Resultados", "La carpeta de resultados no existe.")
 
-    # algorithms
-    
-    def solve_with_dfs(self):
+    # Algorithms Methods
 
-        start_row, start_col = self.find_start_position(self.maze)
-        end_row, end_col = self.find_end_position(self.maze)
-
+    def solve_with_dfs(self, start_row, start_col, end_row, end_col):
         solver = DFSAlgorithm(self.maze)
-        path = solver.find_path(start_row, start_col, end_row, end_col)
-
-        if not path:
-            messagebox.showinfo("Sin Solución", "No se encontró una solución para el laberinto.")
-            return False
-
-        self.update_maze_display(path)
-        return True
+        return solver.find_path(start_row, start_col, end_row, end_col)
     
-    def solve_with_a_star(self):
-            
-        start_row, start_col = self.find_start_position(self.maze)
-        end_row, end_col = self.find_end_position(self.maze)
-    
+    def solve_with_a_star(self, start_row, start_col, end_row, end_col):
         solver = AStarAlgorithm(self.maze)
-        path = solver.find_path(start_row, start_col, end_row, end_col)
-    
-        if not path:
-            messagebox.showinfo("Sin Solución", "No se encontró una solución para el laberinto.")
-            return False
-    
-        self.update_maze_display(path)
-        return True
+        return solver.find_path(start_row, start_col, end_row, end_col)
 
     def find_start_position(self, maze):
         for row in range(len(maze)):

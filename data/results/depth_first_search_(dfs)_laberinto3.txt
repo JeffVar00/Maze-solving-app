@@ -1,7 +1,7 @@
 Tamaño del Laberinto: 
-Filas: 50
-Columnas: 50
+Filas: 200
+Columnas: 200
 
 Algoritmo: Depth First Search (DFS)
-Tiempo: 0.015807 segundos
+Tiempo: 0.834350 segundos
 Memoria usada: 0.00 KB
