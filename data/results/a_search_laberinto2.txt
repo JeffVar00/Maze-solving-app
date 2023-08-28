@@ -1,7 +1,0 @@
-Tamaño del Laberinto: 
-Filas: 50
-Columnas: 50
-
-Algoritmo: A Search
-Tiempo: 0.013963 segundos
-Memoria usada: 0.00 KB

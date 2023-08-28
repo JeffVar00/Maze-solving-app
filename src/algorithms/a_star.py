@@ -11,7 +11,7 @@ class AStarAlgorithm:
         return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
 
     def find_path(self, start_row, start_col, end_row, end_col):
-        open_set = [(0, start_row, start_col)]  # (f-score, row, col)
+        open_set = [(0, start_row, start_col)] 
         came_from = {}
 
         g_score = {(row, col): float('inf') for row in range(self.rows) for col in range(self.cols)}

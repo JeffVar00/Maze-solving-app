@@ -22,7 +22,7 @@ class DFSAlgorithm:
             visited.add(current)
             row, col = current
 
-            directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # Down, Right, Up, Left
+            directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]  
             for dr, dc in directions:
                 new_row, new_col = row + dr, col + dc
                 new_position = (new_row, new_col)
@@ -32,4 +32,4 @@ class DFSAlgorithm:
                     stack.append((new_position, new_path))
                     visited.add(new_position)
 
-        return None  # No path found
+        return None  
