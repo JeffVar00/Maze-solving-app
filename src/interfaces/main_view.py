@@ -70,12 +70,6 @@ class MazeSolverApp:
         self.results_label = Label(self.root, bg="white")
         self.results_label.pack()
 
-        # Bottom Buttons
-        save_frame = Frame(self.root, bg="white")
-        save_frame.pack(pady=10)
-
-        StyledButton(save_frame, "Guardar Laberinto", self.save_maze, "#2ECC71", "white")
-
         # Options frame
         options_frame = Frame(self.root, bg="white")
         options_frame.pack(pady=10)
@@ -127,14 +121,15 @@ class MazeSolverApp:
         result_handler.stop_timer_memory()
         
         if self.completed_maze is True:
+
             result_text = result_handler.record_result()
             self.results_label.config(text=result_text)
             result_handler.save_result(selected_algorithm, self.laberinth_file_path, self.maze)
 
             messagebox.showinfo("Laberinto Cargado", "Laberinto resuelto :D")
 
-        # Save the solved maze into a csv file
-        # self.save_maze()
+            # Save the solved maze into a csv file
+            self.save_maze()
 
     def find_start_position(self, maze):
         for row in range(len(maze)):
@@ -172,15 +167,6 @@ class MazeSolverApp:
             new_maze = generate_labyrinth(rows, columns, difficulty)  # Generate maze based on input
             self.generate_maze_csv(new_maze)  
 
-    def save_maze(self):
-
-        ## ver que hacer si guardar apenas termina o dar la opcion para guardar el laberinto, los resultados si se guardan automaticamente
-
-        if self.maze is None and self.completed_maze is False:
-            messagebox.showerror("Error", "No hay resultados para guardar.")
-            return
-        self.generate_maze_csv(self.maze)  
-
     def generate_maze_csv(self, maze):
         
         file_path = filedialog.asksaveasfilename(filetypes=[("CSV Files", "*.csv")])
@@ -193,6 +179,18 @@ class MazeSolverApp:
             
         save_maze_to_csv(file_path, maze)
         messagebox.showinfo("Laberinto Guardado", "Laberinto guardado con éxito!")
+
+    def save_maze(self):
+        
+        solved_mazes_folder = "data/results/solved_mazes"
+        os.makedirs(solved_mazes_folder, exist_ok=True)
+
+        selected_algorithm = self.algorithm_selector.get_selected_algorithm()
+        laberinth_name = self.laberinth_file_path.split("/")[-1].split(".")[0]
+
+        file_path = f"{solved_mazes_folder}/{selected_algorithm.lower().replace(' ', '_')}{laberinth_name}.txt"
+
+        save_maze_to_csv(file_path, self.maze) 
 
     ###### MAZE GEN METHODS ######
 

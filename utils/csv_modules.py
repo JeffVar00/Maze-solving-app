@@ -9,7 +9,7 @@ def load_maze_from_csv(filename):
     return maze
 
 def save_maze_to_csv(filename, maze):
-    with open(filename, 'w', newline='') as csv_file:
+    with open(filename, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         for row in maze:
             csv_writer.writerow(row)
