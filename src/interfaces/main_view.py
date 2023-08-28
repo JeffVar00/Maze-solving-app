@@ -103,7 +103,6 @@ class MazeSolverApp:
         if self.maze is None:
             messagebox.showerror("Error", "Seleccione un laberinto primero.")
             return
-        print(self.maze)
 
         if not isinstance(self.maze, list):
             messagebox.showerror("Error", "El archivo seleccionado no es un laberinto.")

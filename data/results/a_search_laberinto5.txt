@@ -3,5 +3,5 @@ Filas: 200
 Columnas: 200
 
 Algoritmo: A Search
-Tiempo: 0.213857 segundos
-Memoria usada: 0.00 KB
+Tiempo: 0.905201 segundos
+Memoria usada: 144.87 KB
