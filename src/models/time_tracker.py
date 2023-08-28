@@ -33,7 +33,7 @@ class ResultHandler:
         rows = len(maze)
         columns = len(maze[0])
 
-        results_folder = "data/results"
+        results_folder = "data/results/time_memory_records"
         os.makedirs(results_folder, exist_ok=True)
 
         # Get the laberinth name from filepath
