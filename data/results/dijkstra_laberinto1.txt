@@ -1,0 +1,7 @@
+Tamaño del Laberinto: 
+Filas: 5
+Columnas: 5
+
+Algoritmo: Dijkstra
+Tiempo: 0.946307 segundos
+Memoria usada: 0.00 KB

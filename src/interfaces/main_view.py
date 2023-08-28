@@ -9,6 +9,9 @@ from src.interfaces.components.list import AlgorithmSelector
 from src.interfaces.difficult_view import InputDialog
 from src.models.time_tracker import ResultHandler
 
+from src.algorithms.dfs import DFSAlgorithm
+from src.algorithms.a_star import AStarAlgorithm
+
 from utils.csv_modules import load_maze_from_csv, save_maze_to_csv
 from utils.maze_gen import generate_labyrinth
 
@@ -24,6 +27,14 @@ class MazeSolverApp:
         self.maze = None
         self.laberinth_file_path = None
 
+        self.algorithms = {
+            #"Dijkstra": self.solve_with_dijkstra,
+            "Depth First Search (DFS)": self.solve_with_dfs,
+            #"Breadth First Search (BFS)": self.solve_with_bfs,
+            #"Bellman Ford": self.solve_with_bellman_ford,
+            "A Search": self.solve_with_a_star
+        }
+
         # Configuration of the main window
         self.root.title("Maze Solver Application")
         self.root.config(bg="white")
@@ -32,7 +43,7 @@ class MazeSolverApp:
         window_size_config.center_window()
 
         # Algorithm List
-        algorithms = ["Algoritmo 1", "Algoritmo 2", "Algoritmo 3"]
+        algorithms = ["Dijkstra", "Bellman Ford", "Depth First Search (DFS)", "Breadth First Search (BFS)", "A Search"]
         default_algorithm = algorithms[0]
         self.algorithm_selector = AlgorithmSelector(self.root, algorithms, default_algorithm)
         
@@ -83,6 +94,8 @@ class MazeSolverApp:
 
     def solve_maze(self):
 
+        self.completed_maze = False
+
         # Ask for CSV file
         self.laberinth_file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
         self.maze = load_maze_from_csv(self.laberinth_file_path)
@@ -103,18 +116,21 @@ class MazeSolverApp:
         result_handler = ResultHandler()
         result_handler.start_timer_memory()
         
-        # Run the maze solving algorithm selected
-        # This should be a loop showing every step (updated the maze and call self.update_maze_display()) (perfect result) or the final step (in the end updated the maze with the same method)
-        # ...
-        self.update_maze_display()
+        solving_function = self.algorithms.get(selected_algorithm)
+        if solving_function:
+            if solving_function():
+                self.completed_maze = True
+        else:
+            messagebox.showerror("Error", "Algorithm not found!")
 
         result_handler.stop_timer_memory()
-
-        result_text = result_handler.record_result()
-        self.results_label.config(text=result_text)
-        result_handler.save_result(selected_algorithm, self.laberinth_file_path, self.maze)
         
-        messagebox.showinfo("Laberinto Cargado", "Laberinto resuelto :D")
+        if self.completed_maze is True:
+            result_text = result_handler.record_result()
+            self.results_label.config(text=result_text)
+            result_handler.save_result(selected_algorithm, self.laberinth_file_path, self.maze)
+
+            messagebox.showinfo("Laberinto Cargado", "Laberinto resuelto :D")
 
         # Save the solved maze into a csv file
         # self.save_maze()
@@ -141,7 +157,7 @@ class MazeSolverApp:
         save_maze_to_csv(file_path, maze)
         messagebox.showinfo("Laberinto Guardado", "Laberinto guardado con éxito!")
 
-    def update_maze_display(self):
+    def update_maze_display(self, path=None):
         
         self.color_map = {
             0: "white",
@@ -154,7 +170,9 @@ class MazeSolverApp:
 
         self.maze_canvas.delete("all")  # Clear the canvas
 
-        if self.maze:
+        if self.maze and path:
+
+            self.show_solution_on_interface(path)
 
             if 50 <= len(self.maze) < 75:
                 cell_size = 5
@@ -207,3 +225,54 @@ class MazeSolverApp:
             subprocess.Popen(['explorer', results_folder])
         else:
             messagebox.showinfo("Carpeta de Resultados", "La carpeta de resultados no existe.")
+
+    # algorithms
+    
+    def solve_with_dfs(self):
+
+        start_row, start_col = self.find_start_position(self.maze)
+        end_row, end_col = self.find_end_position(self.maze)
+
+        solver = DFSAlgorithm(self.maze)
+        path = solver.find_path(start_row, start_col, end_row, end_col)
+
+        if not path:
+            messagebox.showinfo("Sin Solución", "No se encontró una solución para el laberinto.")
+            return False
+
+        self.update_maze_display(path)
+        return True
+    
+    def solve_with_a_star(self):
+            
+        start_row, start_col = self.find_start_position(self.maze)
+        end_row, end_col = self.find_end_position(self.maze)
+    
+        solver = AStarAlgorithm(self.maze)
+        path = solver.find_path(start_row, start_col, end_row, end_col)
+    
+        if not path:
+            messagebox.showinfo("Sin Solución", "No se encontró una solución para el laberinto.")
+            return False
+    
+        self.update_maze_display(path)
+        return True
+
+    def find_start_position(self, maze):
+        for row in range(len(maze)):
+            for col in range(len(maze[0])):
+                if maze[row][col] == 2:
+                    return row, col
+        return -1, -1
+
+    def find_end_position(self, maze):
+        for row in range(len(maze)):
+            for col in range(len(maze[0])):
+                if maze[row][col] == 3:
+                    return row, col
+        return -1, -1
+
+    def show_solution_on_interface(self, path):
+        for row, col in path:
+            if self.maze[row][col] != 2 and self.maze[row][col] != 3: 
+                self.maze[row][col] = 5  
