@@ -3,5 +3,5 @@ Filas: 5
 Columnas: 5
 
 Algoritmo: Depth First Search (DFS)
-Tiempo: 0.001603 segundos
-Memoria usada: 0.00 KB
+Tiempo: 0.001001 segundos
+Memoria usada: 1.88 KB
