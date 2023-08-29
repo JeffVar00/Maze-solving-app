@@ -207,7 +207,7 @@ class MazeSolverApp:
             5: "blue"
         }
 
-        self.maze_canvas.delete("all")  # Clear the canvas
+        self.maze_canvas.delete("all")  
 
         if self.maze and path:
 
@@ -231,7 +231,6 @@ class MazeSolverApp:
             maze_width = cols * cell_size
             maze_height = rows * cell_size
 
-            # Center the maze on the screen
             x_offset = (canvas_width - maze_width) / 2
             y_offset = (canvas_height - maze_height) / 2
 
