@@ -85,6 +85,10 @@ class MazeSolverApp:
 
         # Ask for the laberinth
         self.laberinth_file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+
+        if self.laberinth_file_path == "":
+            return
+        
         self.maze = load_maze_from_csv(self.laberinth_file_path)
 
         if self.maze is None:
