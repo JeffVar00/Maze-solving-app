@@ -1,1 +1,5 @@
 data/results/*
+src/__pycache__
+src/algorithms/__pycache__
+src/interfaces/__pycache__
+src/utils/__pycache__
