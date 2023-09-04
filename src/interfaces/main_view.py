@@ -80,17 +80,22 @@ class MazeSolverApp:
     ###### MAZE SOLVER METHODS ######
 
     def solve_maze(self):
+        
+        self.clean_maze()
 
-        self.completed_maze = False
-
-        # Ask for CSV file
+        # Ask for the laberinth
         self.laberinth_file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+
+        if self.laberinth_file_path == "":
+            return
+        
         self.maze = load_maze_from_csv(self.laberinth_file_path)
 
         if self.maze is None:
             messagebox.showerror("Error", "Seleccione un laberinto primero.")
             return
-
+        
+        # I mean this is kind of cursed
         if not isinstance(self.maze, list):
             messagebox.showerror("Error", "El archivo seleccionado no es un laberinto.")
             return
@@ -99,15 +104,20 @@ class MazeSolverApp:
         selected_algorithm = self.algorithm_selector.get_selected_algorithm()
         print(f"Selected Algorithm: {selected_algorithm}")
 
+        solving_function = self.algorithms.get(selected_algorithm)
+
+        # Get the values for starting the algorithm first, before keeping tracking to dont add any more complexity, only the algorithm
+        start_row, start_col = self.find_start_position(self.maze)
+        end_row, end_col = self.find_end_position(self.maze)
+
+        # Starts the tracking
         result_handler = ResultHandler()
         result_handler.start_timer_memory()
-        
-        solving_function = self.algorithms.get(selected_algorithm)
+
+        # Get the algorithm function and solve the maze
         if solving_function:
-
-            start_row, start_col = self.find_start_position(self.maze)
-            end_row, end_col = self.find_end_position(self.maze)
-
+            
+            # Get the path from the algorithm selected
             path = solving_function(start_row, start_col, end_row, end_col)
 
             if path:
@@ -115,18 +125,19 @@ class MazeSolverApp:
                 self.write_maze(path)
             else:
                 messagebox.showinfo("Sin Solución", "No se encontró una solución para el laberinto.")
+
         else:
             messagebox.showerror("Error", "Algorithm not found!")
 
+        # Stop the tracking
         result_handler.stop_timer_memory()
         
         if self.completed_maze is True:
-
+            
+            # Get the tracking results and send them to the interface and a txt
             result_text = result_handler.record_result()
             self.results_label.config(text=result_text)
             result_handler.save_result(selected_algorithm, self.laberinth_file_path, self.maze)
-
-            messagebox.showinfo("Laberinto Cargado", "Laberinto resuelto :D")
 
             # Save the solved maze into a csv file
             self.save_maze()
@@ -145,6 +156,7 @@ class MazeSolverApp:
                     return row, col
         return -1, -1
 
+    # Change the path we got into a route for writing the maze in the canvas and the solution csv
     def show_solution_on_interface(self, path):
         for row, col in path:
             if self.maze[row][col] != 2 and self.maze[row][col] != 3: 
@@ -164,7 +176,8 @@ class MazeSolverApp:
         difficulty = input_dialog.difficulty
 
         if rows is not None and columns is not None and difficulty:
-            new_maze = generate_labyrinth(rows, columns, difficulty)  # Generate maze based on input
+            # Maze generator method
+            new_maze = generate_labyrinth(rows, columns, difficulty) 
             self.generate_maze_csv(new_maze)  
 
     def generate_maze_csv(self, maze):
@@ -207,12 +220,14 @@ class MazeSolverApp:
             5: "blue"
         }
 
-        self.maze_canvas.delete("all")  # Clear the canvas
+        # Clear the canvas
+        self.maze_canvas.delete("all")  
 
         if self.maze and path:
 
             self.show_solution_on_interface(path)
-
+            
+            # Decides the maze size based on how large is the maze
             if 50 <= len(self.maze) < 75:
                 cell_size = 5
             elif 75 <= len(self.maze) <= 150:
@@ -222,20 +237,24 @@ class MazeSolverApp:
             else:
                 cell_size = 20
             
+            # Get the size of the canvas
             canvas_width = self.maze_canvas.winfo_width()  
             canvas_height = self.maze_canvas.winfo_height()  
 
             rows = len(self.maze)
             cols = len(self.maze[0])
 
+            # Get the size of the maze
             maze_width = cols * cell_size
             maze_height = rows * cell_size
 
-            # Center the maze on the screen
+            # Based on the canvas and the maze size look for the center of the canvas 
             x_offset = (canvas_width - maze_width) / 2
             y_offset = (canvas_height - maze_height) / 2
 
             for row in range(rows):
+                
+                # Write each cell based on the current sizes
                 for col in range(cols):
                     x1 = x_offset + col * cell_size
                     y1 = y_offset + row * cell_size
