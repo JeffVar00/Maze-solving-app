@@ -1,7 +1,7 @@
 class DFSAlgorithm:
 
-    # Iterative
-    # Bases on https://medium.com/swlh/solving-mazes-with-depth-first-search-e315771317ae
+    # Iterative Solution algorithm
+    # Inspired on https://medium.com/swlh/solving-mazes-with-depth-first-search-e315771317ae, https://www.geeksforgeeks.org/depth-first-traversal-dfs-on-a-2d-array/, https://www.algosome.com/articles/maze-generation-depth-first.html
 
     def __init__(self, maze):
         # Variables
