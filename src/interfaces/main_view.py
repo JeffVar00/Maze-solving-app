@@ -3,6 +3,8 @@ from tkinter import filedialog, messagebox, Label, Frame, Canvas, CENTER
 import os
 import subprocess
 
+from src.algorithms.bellman_ford import BellmanFordAlgorithm
+from src.algorithms.bfs import BFSAlgorithm
 from src.interfaces.components.button import StyledButton
 from src.interfaces.components.window import DynamicWindowSize
 from src.interfaces.components.list import AlgorithmSelector
@@ -11,6 +13,7 @@ from src.models.time_tracker import ResultHandler
 
 from src.algorithms.dfs import DFSAlgorithm
 from src.algorithms.a_star import AStarAlgorithm
+from src.algorithms.dijkstra import DijkstraAlgorithm
 
 from utils.csv_modules import load_maze_from_csv, save_maze_to_csv
 from utils.maze_gen import generate_labyrinth
@@ -28,10 +31,10 @@ class MazeSolverApp:
         self.laberinth_file_path = None
 
         self.algorithms = {
-            #"Dijkstra": self.solve_with_dijkstra,
+            "Dijkstra": self.solve_with_dijkstra,
             "Depth First Search (DFS)": self.solve_with_dfs,
-            #"Breadth First Search (BFS)": self.solve_with_bfs,
-            #"Bellman Ford": self.solve_with_bellman_ford,
+            "Breadth First Search (BFS)": self.solve_with_bfs,
+            "Bellman Ford": self.solve_with_bellman_ford,
             "A Search": self.solve_with_a_star
         }
 
@@ -291,6 +294,18 @@ class MazeSolverApp:
     ###### OPTIONS METHODS ######
 
     ###### ALGORITHMS METHODS ######
+
+    def solve_with_bfs(self, start_row, start_col, end_row, end_col):
+        solver = BFSAlgorithm(self.maze)
+        return solver.find_path(start_row, start_col, end_row, end_col)
+
+    def solve_with_bellman_ford(self, start_row, start_col, end_row, end_col):
+        solver = BellmanFordAlgorithm(self.maze)
+        return solver.find_path(start_row, start_col, end_row, end_col)
+
+    def solve_with_dijkstra(self, start_row, start_col, end_row, end_col):
+        solver = DijkstraAlgorithm(self.maze)
+        return solver.find_path(start_row, start_col, end_row, end_col)
 
     def solve_with_dfs(self, start_row, start_col, end_row, end_col):
         solver = DFSAlgorithm(self.maze)
